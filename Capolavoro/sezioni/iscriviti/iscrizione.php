@@ -3,12 +3,11 @@ session_start();
     require 'connection.php';
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $email = ($_POST['email']);
-        $password = ($_POST['password']);
-        $repeat_password = ($_POST['repeat_password']);
+        $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
+        $password = strip_tags($_POST['password']);
+        $repeat_password = strip_tags ($_POST['repeat_password']);
         # Check if email or nickname already exists
 
-        // Validate form data
         if ($password != $repeat_password) {
             header("Location: iscrizione.html?error=4"); 
             exit();
@@ -23,11 +22,13 @@ session_start();
             header("Location: register.php?error=email already exist");
             exit();
         }
-     // Combine the password and hash the result
-        $hashed_password = hash('sha3-512', $password); 
+
+        $salt = bin2hex(random_bytes(32));
+     // Combine the password and the salt hash the result
+        $hashed_password = hash('sha3-512', $password.$salt);
         
-        $stmt = $conn->prepare("INSERT INTO account (email, password) VALUES (?, ?)");
-        $stmt->bind_param("ss", $email, $hashed_password);
+        $stmt = $conn->prepare("INSERT INTO account (email, password, salt) VALUES (?, ?, ?)");
+        $stmt->bind_param("sss", $email, $hashed_password, $salt);
         $stmt->execute(); 
 
         $_SESSION['email'] = $email;
