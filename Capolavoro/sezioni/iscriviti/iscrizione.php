@@ -13,7 +13,12 @@ session_start();
             exit();
         }
 
-        $stmt = $conn->prepare("SELECT * FROM account WHERE email = ?");
+        $stmt = $conn->prepare("SELECT * FROM coin WHERE email = ?");       #per i coin
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $stmt = $conn->prepare("SELECT * FROM account WHERE email = ?");    #per la verifica
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -23,11 +28,17 @@ session_start();
             exit();
         }
 
+        $coin=500;
         $salt = bin2hex(random_bytes(32));
      // Combine the password and the salt hash the result
         $hashed_password = hash('sha3-512', $password.$salt);
-        
-        $stmt = $conn->prepare("INSERT INTO account (email, password, salt) VALUES (?, ?, ?)");
+
+
+        $stmt = $conn->prepare("INSERT INTO coin (email, coin) VALUES (?, ?)");                         #per i coin
+        $stmt->bind_param("si", $email, $coin);
+        $stmt->execute(); 
+
+        $stmt = $conn->prepare("INSERT INTO account (email, password, salt) VALUES (?, ?, ?)");         #per la verifica
         $stmt->bind_param("sss", $email, $hashed_password, $salt);
         $stmt->execute(); 
 

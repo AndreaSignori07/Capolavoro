@@ -17,7 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $pass_hash= hash('sha3-512', $password.$salt);
         if($pass_hash == $user->password){
             $_SESSION['user_id'] = $user->id;
-            header("Location: ../../myarea/myareahome.html");
+            header("Location: ../../myarea/myareahome.php");
         } else {
             header("Location: login.html?error=4"); 
         }
