@@ -29,45 +29,44 @@
             <div>Account di:</div>
             <div class="text-sm text-gray-500 dark:text-gray-400">
             <?php
-session_start();
-require 'connection2.php';
+                session_start();
+                require 'connection2.php';
 
-// Controlla se la connessione al database è stata stabilita correttamente
-if (!$conn) {
-    die("Errore nella connessione al database: " . mysqli_connect_error());
-}
+                // Controlla se la connessione al database è stata stabilita correttamente
+                if (!$conn) {
+                    die("Errore nella connessione al database: " . mysqli_connect_error());
+                }
 
-// Controlla se l'utente è loggato
-if(isset($_SESSION['id'])) {
-    // Ottieni l'ID dell'utente loggato dalla sessione
-    $user_id = $_SESSION['id'];
+                if (isset($_COOKIE['id_utente'])) {
+                    // Ottieni il valore del cookie
+                    $user_id_from_cookie = $_COOKIE['id_utente'];
 
-    // Prepara la query per ottenere l'email dell'utente loggato
-    $query = "SELECT email FROM coin WHERE id = $user_id";
+                    // Prepara la query per ottenere l'email dell'utente loggato
+                    $query = "SELECT email FROM account WHERE id = $user_id_from_cookie";
 
-    // Esegui la query
-    $result = mysqli_query($conn, $query);
+                    // Esegui la query
+                    $result = mysqli_query($conn, $query);
 
-    // Controlla se la query è stata eseguita con successo
-    if($result) {
-        // Controlla se è stata trovata almeno una riga
-        if(mysqli_num_rows($result) > 0) {
-            // Ottieni i dati della riga
-            $row = mysqli_fetch_assoc($result);
-            // Stampi l'email dell'utente
-            echo "" . $row['email'];
-        } else {
-            echo "Nessun utente trovato con questo ID.";
-        }
-        
-        echo "Errore nella query: " . mysqli_error($conn);
-    }
-} else {
-    echo "Utente non loggato.";
-}
-// Chiudi la connessione
-mysqli_close($conn);
-?>
+                    // Controlla se la query è stata eseguita con successo
+                    if ($result) {
+                        // Controlla se è stata trovata almeno una riga
+                        if (mysqli_num_rows($result) > 0) {
+                            // Ottieni i dati della riga
+                            $row = mysqli_fetch_assoc($result);
+                            // Stampa l'email dell'utente
+                            echo "" . $row['email'];
+                        } else {
+                            echo "Nessun utente trovato con questo ID.";
+                        }
+                    } else {
+                        echo "Errore nella query: " . mysqli_error($conn);
+                    }
+                } else {
+                    echo "Utente non loggato.";
+                }
+
+                mysqli_close($conn);
+            ?>
 
             </div>
         </div>

@@ -16,7 +16,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $salt = $user->salt;
         $pass_hash= hash('sha3-512', $password.$salt);
         if($pass_hash == $user->password){
-            $_SESSION['user_id'] = $user->id;
+            #creiamo un cookie  
+            $cookie_name = "id_utente";
+            $cookie_value = $user->id;
+            $cookie_lifetime = time() + (86400 * 30);
+            $cookie_path = "/";
+            setcookie($cookie_name, $cookie_value, $cookie_lifetime, $cookie_path);
+
+
             header("Location: ../../myarea/myareahome.php");
         } else {
             header("Location: login.html?error=4"); 
@@ -24,4 +31,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     exit();
 }
+
 ?>
