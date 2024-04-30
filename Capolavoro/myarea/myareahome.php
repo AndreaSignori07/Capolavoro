@@ -36,23 +36,7 @@
                 if (!$conn) {
                     die("Errore nella connessione al database: " . mysqli_connect_error());
                 }
-
-                if (isset($_COOKIE['id_utente'])) {
-                    // Ottieni il valore del cookie
-                    $user_id_from_cookie = $_COOKIE['id_utente'];
-
-                    // Prepara la query per ottenere l'email dell'utente loggato
-                    $query = "SELECT email FROM account WHERE id = $user_id_from_cookie";
-
-                    // Esegui la query
-                    $result = mysqli_query($conn, $query);
-
-                    // Controlla se la query è stata eseguita con successo
-                    if ($result) {
-                        // Controlla se è stata trovata almeno una riga
-                        if (mysqli_num_rows($result) > 0) {
-                            // Ottieni i dati della riga
-                            $row = mysqli_fetch_assoc($result);
+                            $row =  $_SESSION['id_utente'];
                             // Stampa l'email dell'utente
                             echo "" . $row['email'];
                         } else {
